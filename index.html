@@ -1,190 +1,537 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AI関連 用語集</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.7;
-      color: #222;
+    :root{
+      --bg:#ffffff;
+      --fg:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --card:#f9fafb;
+      --accent:#0b2a5b; /* 分類見出し：ダークブルー */
+      --accent-weak: rgba(11, 42, 91, 0.10);
+      --link:#2563eb;
     }
-    .container {
-      display: flex;
-      height: 100vh;
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans", "Noto Sans JP", "Yu Gothic", "Meiryo", sans-serif;
+      color:var(--fg);
+      background:var(--bg);
+      line-height:1.7;
     }
-    nav {
-      width: 280px;
-      border-right: 1px solid #ddd;
-      padding: 1em;
-      overflow-y: auto;
-      background: #fafafa;
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .layout{
+      display:grid;
+      grid-template-columns: 320px 1fr;
+      min-height:100vh;
     }
-    nav h2 {
-      font-size: 1em;
-      margin-top: 1em;
+    .sidebar{
+      position:sticky;
+      top:0;
+      height:100vh;
+      overflow:auto;
+      border-right:1px solid var(--border);
+      padding:16px;
+      background:#fff;
     }
-    nav a {
-      display: block;
-      text-decoration: none;
-      color: #0366d6;
-      font-size: 0.9em;
-      margin: 0.2em 0;
+    .brand{
+      font-weight:800;
+      font-size:16px;
+      margin:0 0 10px 0;
     }
-    nav a:hover {
-      text-decoration: underline;
+    .hint{
+      color:var(--muted);
+      font-size:12px;
+      margin:0 0 10px 0;
     }
-    main {
-      flex: 1;
-      padding: 2em;
-      overflow-y: auto;
+    .search{
+      display:flex;
+      gap:8px;
+      margin:12px 0 16px 0;
     }
-    section {
-      margin-bottom: 3em;
+    .search input{
+      width:100%;
+      padding:10px 12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      font-size:14px;
+      outline:none;
     }
-    h1 {
-      font-size: 1.8em;
-      margin-bottom: 1em;
+    .search input:focus{
+      border-color:var(--link);
+      box-shadow:0 0 0 3px rgba(37,99,235,.12);
     }
-    h2 {
-      border-bottom: 2px solid #ddd;
-      padding-bottom: 0.3em;
-      margin-top: 2em;
+    .search button{
+      padding:10px 12px;
+      border:1px solid var(--border);
+      background:#fff;
+      border-radius:10px;
+      font-size:14px;
+      cursor:pointer;
     }
-    h3 {
-      margin-top: 1.5em;
+    .search button:hover{ border-color:var(--link); }
+
+    .toc-section{ margin:14px 0; }
+    .toc-section-title{
+      font-weight:800;
+      font-size:13px;
+      margin:10px 0 6px 0;
+      color:var(--accent);
     }
-    .search {
-      width: 100%;
-      padding: 0.4em;
-      margin-bottom: 1em;
-      font-size: 0.9em;
+    .toc-section ul{ list-style:none; padding:0; margin:0; }
+    .toc-item a{
+      display:block;
+      padding:6px 8px;
+      border-radius:8px;
+      font-size:13px;
+      color:#111827;
     }
-    .term {
-      margin-bottom: 1.5em;
+    .toc-item a:hover{ background:var(--card); text-decoration:none; }
+    .toc-item.active a{ background:var(--accent-weak); }
+    .hidden{ display:none !important; }
+
+    .main{
+      padding:20px 22px 60px 22px;
+      max-width: 980px;
     }
-    .term.hidden {
-      display: none;
+    h1{
+      font-size:26px;
+      margin:6px 0 16px 0;
+      letter-spacing:.02em;
+    }
+    /* 分類見出し（指定：ダークブルー） */
+    h2{
+      margin:28px 0 12px 0;
+      padding-top:10px;
+      border-top:1px solid var(--border);
+      font-size:18px;
+      color:var(--accent);
+    }
+
+    /* 1語カード */
+    .term{
+      background:var(--card);
+      border:1px solid var(--border);
+      border-radius:14px;
+      padding:14px 16px;
+      margin: 12px 0 22px 0;  /* ← 次の語句との間を広めに */
+    }
+
+    /* 見出し語↔解説の間を詰める */
+    .term h3{
+      margin:0 0 4px 0;
+      font-size:16px;
+    }
+
+    /* 解説：見出し語より1文字分インデント */
+    .term p{
+      margin:0;
+      font-size:14px;
+      color:#111827;
+      padding-left: 1em; /* 1文字分 */
+    }
+
+    .reading{
+      font-size:12px;
+      color:var(--muted);
+      font-weight:600;
+      margin-left:6px;
+    }
+    .toplink{
+      font-size:12px;
+      color:var(--muted);
+      margin-left:8px;
+    }
+    .badge{
+      display:inline-block;
+      font-size:12px;
+      padding:2px 8px;
+      border:1px solid var(--border);
+      border-radius:999px;
+      color:var(--muted);
+      margin-left:8px;
+    }
+
+    @media (max-width: 960px){
+      .layout{ grid-template-columns: 1fr; }
+      .sidebar{
+        position:relative;
+        height:auto;
+        border-right:none;
+        border-bottom:1px solid var(--border);
+      }
     }
   </style>
 </head>
+
 <body>
+  <div class="layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">AI関連 用語集</div>
+      <div class="hint">検索：用語名 / 解説（どちらも対象）</div>
+      <div class="search">
+        <input id="q" type="search" placeholder="例：RAG / プロンプト / ニューラルネットワーク" />
+        <button id="clear" type="button">クリア</button>
+      </div>
 
-<div class="container">
-  <nav>
-    <input type="text" class="search" placeholder="検索…" oninput="searchTerms(this.value)">
-    <h2>① 基本概念</h2>
-    <a href="#ai">AI</a>
-    <a href="#ml">機械学習</a>
-    <a href="#dl">ディープラーニング</a>
-    <a href="#nn">ニューラルネットワーク</a>
-    <a href="#genai">生成AI</a>
-    <a href="#llm">LLM</a>
-    <a href="#prompt">プロンプト</a>
-    <a href="#language">自然言語</a>
-    <a href="#agent">AI Agent</a>
-    <a href="#vision">AI Vision</a>
-    <a href="#ocr">OCR</a>
-    <a href="#jepa">JEPA</a>
+      <nav id="toc">
+        <div class="toc-section">
+          <div class="toc-section-title"><a href="#sec-1">① AIの基本概念・技術</a></div>
+          <ul>
+            <li class="toc-item" data-target="ai"><a href="#ai">AI</a></li>
+            <li class="toc-item" data-target="ml"><a href="#ml">機械学習</a></li>
+            <li class="toc-item" data-target="deep-learning"><a href="#deep-learning">ディープラーニング</a></li>
+            <li class="toc-item" data-target="neural-network"><a href="#neural-network">ニューラルネットワーク</a></li>
+            <li class="toc-item" data-target="genai"><a href="#genai">生成AI</a></li>
+            <li class="toc-item" data-target="llm"><a href="#llm">LLM</a></li>
+            <li class="toc-item" data-target="prompt"><a href="#prompt">プロンプト</a></li>
+            <li class="toc-item" data-target="natural-language"><a href="#natural-language">自然言語</a></li>
+            <li class="toc-item" data-target="ai-agent"><a href="#ai-agent">AI Agent</a></li>
+            <li class="toc-item" data-target="ai-vision"><a href="#ai-vision">AI Vision</a></li>
+            <li class="toc-item" data-target="ocr"><a href="#ocr">OCR</a></li>
+            <li class="toc-item" data-target="jepa"><a href="#jepa">JEPA</a></li>
+          </ul>
+        </div>
 
-    <h2>② 設計・運用</h2>
-    <a href="#api">API</a>
-    <a href="#saas">SaaS</a>
-    <a href="#paas">PaaS</a>
-    <a href="#wsl2">WSL2</a>
-    <a href="#gpu">GPU</a>
-    <a href="#cuda">CUDA</a>
-    <a href="#python">Python</a>
-    <a href="#terminal">ターミナル</a>
-    <a href="#poc">PoC</a>
-    <a href="#deploy">デプロイ</a>
-    <a href="#mlops">MLOps</a>
-    <a href="#finetune">ファインチューニング</a>
-    <a href="#rag">RAG</a>
-    <a href="#gepa">GEPA</a>
-    <a href="#dspy">DSPy</a>
-    <a href="#vibe">バイブコーディング</a>
+        <div class="toc-section">
+          <div class="toc-section-title"><a href="#sec-2">② AIの設計・開発・運用関係用語</a></div>
+          <ul>
+            <li class="toc-item" data-target="api"><a href="#api">API</a></li>
+            <li class="toc-item" data-target="saas"><a href="#saas">SaaS</a></li>
+            <li class="toc-item" data-target="paas"><a href="#paas">PaaS</a></li>
+            <li class="toc-item" data-target="wsl2"><a href="#wsl2">WSL2</a></li>
+            <li class="toc-item" data-target="gpu"><a href="#gpu">GPU</a></li>
+            <li class="toc-item" data-target="cuda"><a href="#cuda">CUDA</a></li>
+            <li class="toc-item" data-target="python"><a href="#python">Python</a></li>
+            <li class="toc-item" data-target="terminal"><a href="#terminal">ターミナル</a></li>
+            <li class="toc-item" data-target="poc"><a href="#poc">PoC</a></li>
+            <li class="toc-item" data-target="deploy"><a href="#deploy">デプロイ</a></li>
+            <li class="toc-item" data-target="mlops"><a href="#mlops">MLOps</a></li>
+            <li class="toc-item" data-target="finetuning"><a href="#finetuning">ファインチューニング</a></li>
+            <li class="toc-item" data-target="rag"><a href="#rag">RAG</a></li>
+            <li class="toc-item" data-target="gepa"><a href="#gepa">GEPA</a></li>
+            <li class="toc-item" data-target="dspy"><a href="#dspy">DSPy</a></li>
+            <li class="toc-item" data-target="vibe-coding"><a href="#vibe-coding">バイブコーディング</a></li>
+          </ul>
+        </div>
 
-    <h2>③ ツール</h2>
-    <a href="#claude">Claude Code</a>
-    <a href="#antigravity">Antigravity</a>
-    <a href="#mlflow">MLflow</a>
-    <a href="#github">GitHub</a>
-    <a href="#cloudflare">Cloudflare</a>
-    <a href="#astro">Astro</a>
+        <div class="toc-section">
+          <div class="toc-section-title"><a href="#sec-3">③ 開発ツール／インフラ</a></div>
+          <ul>
+            <li class="toc-item" data-target="claude-code"><a href="#claude-code">Claude Code</a></li>
+            <li class="toc-item" data-target="antigravity"><a href="#antigravity">Antigravity</a></li>
+            <li class="toc-item" data-target="mlflow"><a href="#mlflow">MLflow</a></li>
+            <li class="toc-item" data-target="github"><a href="#github">GitHub</a></li>
+            <li class="toc-item" data-target="cloudflare"><a href="#cloudflare">Cloudflare</a></li>
+            <li class="toc-item" data-target="astro"><a href="#astro">Astro</a></li>
+          </ul>
+        </div>
 
-    <h2>⑤ サービス</h2>
-    <a href="#notebooklm">NotebookLM</a>
-    <a href="#perplexity">Perplexity</a>
-    <a href="#nanobanana">Nanobanana</a>
-    <a href="#sd">Stable Diffusion</a>
-    <a href="#uvr5">UVR5</a>
-    <a href="#veo">Veo</a>
-    <a href="#visionai">Vision AI</a>
-  </nav>
+        <div class="toc-section">
+          <div class="toc-section-title"><a href="#sec-5">⑤ AIサービス・ツール</a></div>
+          <ul>
+            <li class="toc-item" data-target="notebooklm"><a href="#notebooklm">NotebookLM</a></li>
+            <li class="toc-item" data-target="perplexity"><a href="#perplexity">Perplexity</a></li>
+            <li class="toc-item" data-target="nanobanana"><a href="#nanobanana">Nanobanana</a></li>
+            <li class="toc-item" data-target="stable-diffusion"><a href="#stable-diffusion">Stable Diffusion</a></li>
+            <li class="toc-item" data-target="uvr5"><a href="#uvr5">UVR5</a></li>
+            <li class="toc-item" data-target="veo"><a href="#veo">Veo</a></li>
+            <li class="toc-item" data-target="vision-ai"><a href="#vision-ai">Vision AI</a></li>
+          </ul>
+        </div>
+      </nav>
 
-  <main id="content">
+      <p class="hint">※このHTMLは1ファイルで完結（オフライン閲覧可）。</p>
+    </aside>
 
-    <h1>AI関連 用語集</h1>
+    <main class="main" id="main">
+      <h1>AI関連 用語集 <span class="badge">目次 + 検索</span></h1>
 
-    <section>
-      <h2>① AIの基本概念・技術</h2>
+      <section id="sec-1">
+        <h2>① AIの基本概念・技術</h2>
 
-      <div class="term" id="ai"><h3>AI（人工知能）</h3>
-      <p>人間の知的作業をコンピュータで実現しようとする技術全般。</p></div>
+        <article class="term" id="ai" data-search="ai artificial intelligence 人工知能 エーアイ 人間の知的作業 認識 判断 生成 コンピュータ">
+          <h3>AI（Artificial Intelligence／人工知能）<span class="reading">（エーアイ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>人間の知的作業（認識・判断・生成など）をコンピュータで実現しようとする技術全般の総称。</p>
+        </article>
 
-      <div class="term" id="ml"><h3>機械学習</h3>
-      <p>データから規則性を学び、判断や予測を行うAIの基本技術。</p></div>
+        <article class="term" id="ml" data-search="機械学習 machine learning きかいがくしゅう データ 規則性 判断 予測 ai 基本技術">
+          <h3>機械学習（Machine Learning）<span class="reading">（きかいがくしゅう）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>データから規則性を学び、判断や予測を行うAIの基本技術。現在の多くのAIはこの仕組みを基盤としている。</p>
+        </article>
 
-      <div class="term" id="dl"><h3>ディープラーニング</h3>
-      <p>多層のニューラルネットワークを用いた機械学習手法。</p></div>
+        <article class="term" id="deep-learning" data-search="ディープラーニング deep learning 多層 ニューラルネットワーク 機械学習 画像認識 音声認識 生成ai">
+          <h3>ディープラーニング（Deep Learning）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>多層のニューラルネットワークを用いた機械学習手法。画像認識、音声認識、生成AIなどの中核技術。</p>
+        </article>
 
-      <div class="term" id="nn"><h3>ニューラルネットワーク</h3>
-      <p>脳の神経構造をモデル化した計算手法。</p></div>
+        <article class="term" id="neural-network" data-search="ニューラルネットワーク neural network ニューロン 層 特徴 学習 判断 予測 機械学習 ディープラーニング">
+          <h3>ニューラルネットワーク（Neural Network）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>人間の脳の神経細胞（ニューロン）のつながりを数式モデルとして単純化して再現した計算手法。入力されたデータを複数の層で処理しながら、特徴を学習し、最終的な判断や予測を行う。ニューラルネットワークは機械学習の一手法であり、その層を深く重ねたものがディープラーニングである。</p>
+        </article>
 
-      <div class="term" id="genai"><h3>生成AI</h3>
-      <p>文章・画像・音声などを新しく生成するAI。</p></div>
+        <article class="term" id="genai" data-search="生成ai generative ai 文章 画像 音声 動画 コード 生成 大規模言語モデル">
+          <h3>生成AI（Generative AI）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>文章・画像・音声・動画・コードなどを新しく生成するAI。大規模言語モデルなどを基盤としている。</p>
+        </article>
 
-      <div class="term" id="llm"><h3>LLM</h3>
-      <p>大量の文章を学習した大規模言語モデル。</p></div>
+        <article class="term" id="llm" data-search="llm large language model 大規模言語モデル エルエルエム 大量 文章データ 学習 生成 要約 質問応答">
+          <h3>LLM（Large Language Model／大規模言語モデル）<span class="reading">（エルエルエム）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>大量の文章データを学習し、文章生成・要約・質問応答などを行うAIモデル。生成AIの中心的存在。</p>
+        </article>
 
-      <div class="term" id="prompt"><h3>プロンプト</h3>
-      <p>AIに対する指示文。</p></div>
+        <article class="term" id="prompt" data-search="プロンプト prompt 指示文 入力文 自然言語 条件指定 箇条書き">
+          <h3>プロンプト（Prompt）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>AIに対して何をしてほしいかを伝えるための指示文・入力文のこと。文章・箇条書き・条件指定など、自然言語で与えられる。</p>
+        </article>
 
-      <div class="term" id="language"><h3>自然言語</h3>
-      <p>人間が日常的に使う言語。</p></div>
+        <article class="term" id="natural-language" data-search="自然言語 natural language しぜんげんご 日本語 英語 会話 文章 プログラミング言語 文法 記号規則">
+          <h3>自然言語（Natural Language）<span class="reading">（しぜんげんご）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>人間が日常的に使っている言葉のこと。日本語・英語などの会話や文章として使われる言語を指し、プログラミング言語のように厳密な文法や記号規則を前提としない。</p>
+        </article>
 
-      <div class="term" id="agent"><h3>AI Agent</h3>
-      <p>自律的に判断し行動するAI。</p></div>
+        <article class="term" id="ai-agent" data-search="ai agent エーアイ エージェント 自律 目標 判断 ツール 操作 タスク 考える 実行 確認">
+          <h3>AI Agent<span class="reading">（エーアイ・エージェント）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>目標を与えると、AIが自律的に判断し、複数の処理やツール操作を組み合わせてタスクを遂行する仕組み。「考える → 実行する → 確認」を繰り返す。</p>
+        </article>
 
-      <div class="term" id="vision"><h3>AI Vision</h3>
-      <p>画像や映像を認識・解析する技術分野。</p></div>
+        <article class="term" id="ai-vision" data-search="ai vision エーアイ ビジョン 画像 映像 認識 解析 物体認識 異常検知 文字認識">
+          <h3>AI Vision<span class="reading">（エーアイ・ビジョン）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>AIを用いて画像や映像の内容を認識・解析する技術分野の総称。物体認識、異常検知、文字認識などを含む。</p>
+        </article>
 
-      <div class="term" id="ocr"><h3>OCR</h3>
-      <p>画像内の文字をテキスト化する技術。</p></div>
+        <article class="term" id="ocr" data-search="ocr optical character recognition 光学文字認識 オーシーアール 手書き 印刷 書類 テキスト 変換 ai ocr ディープラーニング">
+          <h3>OCR（Optical Character Recognition／光学文字認識）<span class="reading">（オーシーアール）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>手書き文字や印刷された書類をデジタルテキストに変換する技術。かつてはパターン照合が主流だったが、現在はディープラーニングを用いた「AI OCR」が一般的であり、認識精度が飛躍的に向上している。</p>
+        </article>
 
-      <div class="term" id="jepa"><h3>JEPA</h3>
-      <p>意味理解を重視した学習設計思想。</p></div>
-    </section>
+        <article class="term" id="jepa" data-search="jepa joint embedding predictive architecture ジェパ meta ヤン ルカン 意味 予測 学習 設計思想 世界を理解">
+          <h3>JEPA（Joint Embedding Predictive Architecture）<span class="reading">（ジェパ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Metaのヤン・ルカン氏が提唱した、情報の「意味」を予測して学習する設計思想。人間のように世界を理解するAIの構築を目指す。</p>
+        </article>
+      </section>
 
-    <!-- 以下、②③⑤も同様に続けて拡張可能 -->
+      <section id="sec-2">
+        <h2>② AIの設計・開発・運用関係用語</h2>
 
-  </main>
-</div>
+        <article class="term" id="api" data-search="api application programming interface エーピーアイ ソフトウェア 機能 データ やり取り 窓口 ai サービス">
+          <h3>API（Application Programming Interface）<span class="reading">（エーピーアイ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>ソフトウェア同士が機能やデータをやり取りするための仕組み。AIサービスの機能を外部から利用するための窓口。</p>
+        </article>
 
-<script>
-function searchTerms(query) {
-  query = query.toLowerCase();
-  document.querySelectorAll('.term').forEach(term => {
-    term.classList.toggle(
-      'hidden',
-      !term.textContent.toLowerCase().includes(query)
-    );
-  });
-}
-</script>
+        <article class="term" id="saas" data-search="saas software as a service サース インストール不要 インターネット 経由 提供形態">
+          <h3>SaaS（Software as a Service）<span class="reading">（サース）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>ソフトウェアをインストールせず、インターネット経由で利用する提供形態。</p>
+        </article>
 
+        <article class="term" id="paas" data-search="paas platform as a service パース アプリケーション 開発 実行 環境 インフラ 構築不要">
+          <h3>PaaS（Platform as a Service）<span class="reading">（パース）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>アプリケーション開発・実行に必要な環境を、インフラ構築なしで利用できる提供形態。</p>
+        </article>
+
+        <article class="term" id="wsl2" data-search="wsl2 windows subsystem for linux 2 ダブリューエスエルツー windows linux 環境 ネイティブ ai 開発">
+          <h3>WSL2（Windows Subsystem for Linux 2）<span class="reading">（ダブリューエスエルツー）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Windows上でLinux環境をほぼネイティブ性能で動かす仕組み。AI・開発用途で広く使われる。</p>
+        </article>
+
+        <article class="term" id="gpu" data-search="gpu graphics processing unit ジーピーユー 並列計算 演算装置 ai ディープラーニング 学習 推論">
+          <h3>GPU（Graphics Processing Unit）<span class="reading">（ジーピーユー）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>並列計算が得意な演算装置。AIやディープラーニングの学習・推論に不可欠。</p>
+        </article>
+
+        <article class="term" id="cuda" data-search="cuda compute unified device architecture キューダ nvidia gpu 並列計算 プラットフォーム 高速化">
+          <h3>CUDA（Compute Unified Device Architecture）<span class="reading">（キューダ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>GPU（主にNVIDIA）向けの並列計算プラットフォーム。AI計算の高速化に使われる。</p>
+        </article>
+
+        <article class="term" id="python" data-search="python パイソン プログラミング言語 ai 開発 データ分析 文法 シンプル">
+          <h3>Python<span class="reading">（パイソン）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>AI開発やデータ分析の分野で主流となっているプログラミング言語。文法がシンプルで読みやすく、世界中の開発者に利用されている。</p>
+        </article>
+
+        <article class="term" id="terminal" data-search="ターミナル コマンド 文字入力 直接 命令 ソフトウェア">
+          <h3>ターミナル<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>文字入力（コマンド）でコンピュータに直接命令を下すためのソフトウェア。</p>
+        </article>
+
+        <article class="term" id="poc" data-search="poc proof of concept 概念実証 ピーオーシー 技術 アイデア 実現可能 小規模 検証 本番運用">
+          <h3>PoC（Proof of Concept／概念実証）<span class="reading">（ピーオーシー）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>新しい技術やアイデアが、技術的に実現可能かを小規模に検証する段階。本番運用とは異なる。</p>
+        </article>
+
+        <article class="term" id="deploy" data-search="デプロイ deploy 配置 公開 アプリ aiモデル 利用できる環境 ローカル サーバー 本番">
+          <h3>デプロイ（Deploy）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>開発したアプリやAIモデルを、実際に利用できる環境へ配置・公開すること。</p>
+        </article>
+
+        <article class="term" id="mlops" data-search="mlops machine learning operations エムエルオプス 作成 公開 運用 改善 管理 仕組み devops">
+          <h3>MLOps（Machine Learning Operations）<span class="reading">（エムエルオプス）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>機械学習モデルを「作成・公開・運用・改善」まで一貫して管理するための考え方や仕組み。DevOps（Development and Operations）の機械学習版。</p>
+        </article>
+
+        <article class="term" id="finetuning" data-search="ファインチューニング fine-tuning 追加学習 学習済み モデル 特定用途 専門分野 文体調整">
+          <h3>ファインチューニング（Fine-tuning）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>学習済みAIモデルを、特定の用途やデータに合わせて追加学習させること。専門分野特化や文体調整に使われる。</p>
+        </article>
+
+        <article class="term" id="rag" data-search="rag retrieval augmented generation 検索拡張生成 ラグ 外部 文書 データベース 検索 根拠 回答 生成">
+          <h3>RAG（Retrieval Augmented Generation／検索拡張生成）<span class="reading">（ラグ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>AIが回答を生成する際に、外部の文書やデータベースを検索し、その内容を根拠として利用する仕組み。</p>
+        </article>
+
+        <article class="term" id="gepa" data-search="gepa genetic-pareto ゲパ プロンプト 自動 進化 最適化 遺伝的アルゴリズム パレート">
+          <h3>GEPA（Genetic-Pareto）<span class="reading">（ゲパ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>プロンプトを自動的に進化・最適化させるための手法。遺伝的アルゴリズムとパレート理論を組み合わせ、AIに「最適な指示文」を自ら探させる技術。</p>
+        </article>
+
+        <article class="term" id="dspy" data-search="dspy declarative sequencing pythonic programs ディーエスパイ 言語モデル 自動最適化 python フレームワーク rag 質問応答">
+          <h3>DSPy（Declarative Sequencing Pythonic programs）<span class="reading">（ディーエスパイ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>言語モデルの挙動をプログラミング的に自動最適化するPythonフレームワーク。GEPAと同様に「手動のプロンプト調整」を不要にすることを目指している。RAGや質問応答システムの品質改善に使われる。</p>
+        </article>
+
+        <article class="term" id="vibe-coding" data-search="バイブコーディング vibe coding 目的 雰囲気 自然言語 コード 開発スタイル 試作 アイデア検証 俗語">
+          <h3>バイブコーディング（Vibe Coding）<a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>AIに厳密な設計や仕様を与えず、「目的や雰囲気」を自然言語で伝えながらコードを書いてもらう開発スタイル。主に試作やアイデア検証で使われる非公式・俗語的な呼称。</p>
+        </article>
+      </section>
+
+      <section id="sec-3">
+        <h2>③ 開発ツール／インフラ</h2>
+
+        <article class="term" id="claude-code" data-search="claude code cli command line interface クロードコード anthropic ターミナル 操作 執筆 テスト デバッグ 自律">
+          <h3>Claude Code／CLI（Command Line Interface）<span class="reading">（クロードコード）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Anthropicが開発した開発者向けツール。AIが直接ターミナルを操作し、コードの執筆・テスト・デバッグを自律的に実行する。</p>
+        </article>
+
+        <article class="term" id="antigravity" data-search="antigravity アンチグラビティ google 自律型 開発ツール ファイル生成 サーバー起動 ブラウザ操作 アプリ構築">
+          <h3>Antigravity<span class="reading">（アンチグラビティ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Googleが提供する自律型開発ツール。AIがファイル生成、サーバー起動、ブラウザ操作などを一貫して行い、アプリ構築を代行する。</p>
+        </article>
+
+        <article class="term" id="mlflow" data-search="mlflow エムエルフロー 機械学習 実験 モデル 設定 成果 一元管理 再現性 共有性 オープンソース">
+          <h3>MLflow<span class="reading">（エムエルフロー）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>機械学習の実験・モデル・設定・成果を一元管理し、再現性と共有性を高めるためのオープンソースソフトウェア。</p>
+        </article>
+
+        <article class="term" id="github" data-search="github ギットハブ ソースコード 保存 管理 共有 履歴管理 共同開発 プラットフォーム">
+          <h3>GitHub<span class="reading">（ギットハブ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>ソースコードを保存・管理・共有するためのプラットフォーム。履歴管理や共同開発に使われる。</p>
+        </article>
+
+        <article class="term" id="cloudflare" data-search="cloudflare クラウドフレア web 配信 セキュリティ ホスティング クラウド github 連携 自動公開">
+          <h3>Cloudflare<span class="reading">（クラウドフレア）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Webサイトの配信・セキュリティ・ホスティングを提供するクラウドサービス。GitHubと連携して自動公開が可能。</p>
+        </article>
+
+        <article class="term" id="astro" data-search="astro アストロ 静的サイト web フレームワーク 高速表示 シンプル構成 ブログ ドキュメント">
+          <h3>Astro<span class="reading">（アストロ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>高速表示とシンプル構成を重視した、静的サイト向けのWebフレームワーク。ブログやドキュメントサイトに向いている。</p>
+        </article>
+      </section>
+
+      <section id="sec-5">
+        <h2>⑤ AIサービス・ツール</h2>
+
+        <article class="term" id="notebooklm" data-search="notebooklm ノートブックエルエム google 資料特化 ai アシスタント 文書 url 根拠 要約 質問応答 整理">
+          <h3>NotebookLM<span class="reading">（ノートブックエルエム）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>資料特化型のAIアシスタント。ユーザーが与えた文書やURLの内容のみを根拠に、要約・質問応答・整理を行う。</p>
+        </article>
+
+        <article class="term" id="perplexity" data-search="perplexity パープレキシティ 検索エンジン型 ai 根拠情報 回答 生成">
+          <h3>Perplexity<span class="reading">（パープレキシティ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>検索エンジン型のAIサービス。質問に対し、根拠情報を示しながら回答を生成する点が特徴。</p>
+        </article>
+
+        <article class="term" id="nanobanana" data-search="nanobanana ナノバナナ google 画像生成 編集 モデル 自然言語 複雑 指示 高品質 画像">
+          <h3>Nanobanana<span class="reading">（ナノバナナ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>Googleが開発した画像生成・編集モデル。自然言語による複雑な指示を理解し、高品質な画像を生成する。</p>
+        </article>
+
+        <article class="term" id="stable-diffusion" data-search="stable diffusion ステイブル ディフュージョン オープンソース 画像生成 ai ローカル 実行 追加学習 カスタマイズ">
+          <h3>Stable Diffusion<span class="reading">（ステイブル・ディフュージョン）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>オープンソースの画像生成AI。ローカル環境での実行や、高度な追加学習・カスタマイズが可能である。</p>
+        </article>
+
+        <article class="term" id="uvr5" data-search="uvr5 ultimate vocal remover v5 ユーブイアールファイブ 音声 ボーカル 伴奏 分離 ai ツール 音楽制作">
+          <h3>UVR5（Ultimate Vocal Remover v5）<span class="reading">（ユーブイアールファイブ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>音声ファイルからボーカルと伴奏を分離するAIツール。音楽制作や研究用途で使われる。</p>
+        </article>
+
+        <article class="term" id="veo" data-search="veo ヴェオ 動画生成 ai テキスト 指示 高品質 動画 生成 モデル">
+          <h3>Veo<span class="reading">（ヴェオ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>動画生成AIモデル。テキスト指示から高品質な動画を生成できることを特徴とする。</p>
+        </article>
+
+        <article class="term" id="vision-ai" data-search="vision ai ビジョンエーアイ 画像解析 クラウドサービス ai vision api 物体検知 ocr">
+          <h3>Vision AI<span class="reading">（ビジョンエーアイ）</span><a class="toplink" href="#sidebar">（目次へ）</a></h3>
+          <p>画像解析を行うクラウドサービスの名称。AI Vision技術をAPIとして利用できる。</p>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    const q = document.getElementById('q');
+    const clearBtn = document.getElementById('clear');
+    const tocItems = Array.from(document.querySelectorAll('.toc-item'));
+    const terms = Array.from(document.querySelectorAll('.term'));
+    const tocSections = Array.from(document.querySelectorAll('.toc-section'));
+
+    function normalize(s){ return (s || '').toLowerCase(); }
+
+    function applySearch(){
+      const query = normalize(q.value).trim();
+      if(!query){
+        terms.forEach(t => t.classList.remove('hidden'));
+        tocItems.forEach(li => li.classList.remove('hidden'));
+        tocSections.forEach(sec => sec.classList.remove('hidden'));
+        return;
+      }
+      terms.forEach(t => {
+        const hay = normalize(t.getAttribute('data-search')) + " " + normalize(t.textContent);
+        t.classList.toggle('hidden', !hay.includes(query));
+      });
+      tocItems.forEach(li => {
+        const id = li.getAttribute('data-target');
+        const term = document.getElementById(id);
+        const show = term && !term.classList.contains('hidden');
+        li.classList.toggle('hidden', !show);
+      });
+      tocSections.forEach(sec => {
+        const anyVisible = Array.from(sec.querySelectorAll('.toc-item')).some(li => !li.classList.contains('hidden'));
+        sec.classList.toggle('hidden', !anyVisible);
+      });
+    }
+
+    q.addEventListener('input', applySearch);
+    clearBtn.addEventListener('click', () => {
+      q.value = '';
+      applySearch();
+      q.focus();
+    });
+
+    // Active highlight while scrolling
+    const termObserver = new IntersectionObserver((entries) => {
+      let best = null;
+      for(const e of entries){
+        if(e.isIntersecting){
+          if(!best || e.intersectionRatio > best.intersectionRatio) best = e;
+        }
+      }
+      if(best){
+        const id = best.target.id;
+        tocItems.forEach(li => li.classList.toggle('active', li.getAttribute('data-target') === id));
+      }
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: [0.1, 0.25, 0.5, 0.75, 1] });
+
+    terms.forEach(t => termObserver.observe(t));
+    document.documentElement.style.scrollBehavior = 'smooth';
+  </script>
 </body>
 </html>
