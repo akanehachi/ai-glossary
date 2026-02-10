@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>AI関連 用語集</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+      color: #222;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    nav {
+      width: 280px;
+      border-right: 1px solid #ddd;
+      padding: 1em;
+      overflow-y: auto;
+      background: #fafafa;
+    }
+    nav h2 {
+      font-size: 1em;
+      margin-top: 1em;
+    }
+    nav a {
+      display: block;
+      text-decoration: none;
+      color: #0366d6;
+      font-size: 0.9em;
+      margin: 0.2em 0;
+    }
+    nav a:hover {
+      text-decoration: underline;
+    }
+    main {
+      flex: 1;
+      padding: 2em;
+      overflow-y: auto;
+    }
+    section {
+      margin-bottom: 3em;
+    }
+    h1 {
+      font-size: 1.8em;
+      margin-bottom: 1em;
+    }
+    h2 {
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 0.3em;
+      margin-top: 2em;
+    }
+    h3 {
+      margin-top: 1.5em;
+    }
+    .search {
+      width: 100%;
+      padding: 0.4em;
+      margin-bottom: 1em;
+      font-size: 0.9em;
+    }
+    .term {
+      margin-bottom: 1.5em;
+    }
+    .term.hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <nav>
+    <input type="text" class="search" placeholder="検索…" oninput="searchTerms(this.value)">
+    <h2>① 基本概念</h2>
+    <a href="#ai">AI</a>
+    <a href="#ml">機械学習</a>
+    <a href="#dl">ディープラーニング</a>
+    <a href="#nn">ニューラルネットワーク</a>
+    <a href="#genai">生成AI</a>
+    <a href="#llm">LLM</a>
+    <a href="#prompt">プロンプト</a>
+    <a href="#language">自然言語</a>
+    <a href="#agent">AI Agent</a>
+    <a href="#vision">AI Vision</a>
+    <a href="#ocr">OCR</a>
+    <a href="#jepa">JEPA</a>
+
+    <h2>② 設計・運用</h2>
+    <a href="#api">API</a>
+    <a href="#saas">SaaS</a>
+    <a href="#paas">PaaS</a>
+    <a href="#wsl2">WSL2</a>
+    <a href="#gpu">GPU</a>
+    <a href="#cuda">CUDA</a>
+    <a href="#python">Python</a>
+    <a href="#terminal">ターミナル</a>
+    <a href="#poc">PoC</a>
+    <a href="#deploy">デプロイ</a>
+    <a href="#mlops">MLOps</a>
+    <a href="#finetune">ファインチューニング</a>
+    <a href="#rag">RAG</a>
+    <a href="#gepa">GEPA</a>
+    <a href="#dspy">DSPy</a>
+    <a href="#vibe">バイブコーディング</a>
+
+    <h2>③ ツール</h2>
+    <a href="#claude">Claude Code</a>
+    <a href="#antigravity">Antigravity</a>
+    <a href="#mlflow">MLflow</a>
+    <a href="#github">GitHub</a>
+    <a href="#cloudflare">Cloudflare</a>
+    <a href="#astro">Astro</a>
+
+    <h2>⑤ サービス</h2>
+    <a href="#notebooklm">NotebookLM</a>
+    <a href="#perplexity">Perplexity</a>
+    <a href="#nanobanana">Nanobanana</a>
+    <a href="#sd">Stable Diffusion</a>
+    <a href="#uvr5">UVR5</a>
+    <a href="#veo">Veo</a>
+    <a href="#visionai">Vision AI</a>
+  </nav>
+
+  <main id="content">
+
+    <h1>AI関連 用語集</h1>
+
+    <section>
+      <h2>① AIの基本概念・技術</h2>
+
+      <div class="term" id="ai"><h3>AI（人工知能）</h3>
+      <p>人間の知的作業をコンピュータで実現しようとする技術全般。</p></div>
+
+      <div class="term" id="ml"><h3>機械学習</h3>
+      <p>データから規則性を学び、判断や予測を行うAIの基本技術。</p></div>
+
+      <div class="term" id="dl"><h3>ディープラーニング</h3>
+      <p>多層のニューラルネットワークを用いた機械学習手法。</p></div>
+
+      <div class="term" id="nn"><h3>ニューラルネットワーク</h3>
+      <p>脳の神経構造をモデル化した計算手法。</p></div>
+
+      <div class="term" id="genai"><h3>生成AI</h3>
+      <p>文章・画像・音声などを新しく生成するAI。</p></div>
+
+      <div class="term" id="llm"><h3>LLM</h3>
+      <p>大量の文章を学習した大規模言語モデル。</p></div>
+
+      <div class="term" id="prompt"><h3>プロンプト</h3>
+      <p>AIに対する指示文。</p></div>
+
+      <div class="term" id="language"><h3>自然言語</h3>
+      <p>人間が日常的に使う言語。</p></div>
+
+      <div class="term" id="agent"><h3>AI Agent</h3>
+      <p>自律的に判断し行動するAI。</p></div>
+
+      <div class="term" id="vision"><h3>AI Vision</h3>
+      <p>画像や映像を認識・解析する技術分野。</p></div>
+
+      <div class="term" id="ocr"><h3>OCR</h3>
+      <p>画像内の文字をテキスト化する技術。</p></div>
+
+      <div class="term" id="jepa"><h3>JEPA</h3>
+      <p>意味理解を重視した学習設計思想。</p></div>
+    </section>
+
+    <!-- 以下、②③⑤も同様に続けて拡張可能 -->
+
+  </main>
+</div>
+
+<script>
+function searchTerms(query) {
+  query = query.toLowerCase();
+  document.querySelectorAll('.term').forEach(term => {
+    term.classList.toggle(
+      'hidden',
+      !term.textContent.toLowerCase().includes(query)
+    );
+  });
+}
+</script>
+
+</body>
+</html>
